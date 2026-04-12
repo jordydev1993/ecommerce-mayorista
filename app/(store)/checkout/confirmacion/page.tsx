@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -7,7 +8,7 @@ import { ShoppingBag } from 'lucide-react'
 import { WhatsAppButton } from '@/components/checkout/WhatsAppButton'
 import type { CreateOrderPayload } from '@/types/order'
 
-export default function ConfirmacionPage() {
+function ConfirmacionContent() {
   const searchParams = useSearchParams()
   const orderId = searchParams.get('orderId')
 
@@ -57,5 +58,13 @@ export default function ConfirmacionPage() {
         </Link>
       </div>
     </main>
+  )
+}
+
+export default function ConfirmacionPage() {
+  return (
+    <Suspense>
+      <ConfirmacionContent />
+    </Suspense>
   )
 }
