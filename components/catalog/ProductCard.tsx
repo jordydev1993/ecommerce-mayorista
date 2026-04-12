@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Image from 'next/image'
 import { ShoppingCart, Plus, Minus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -18,9 +18,38 @@ function formatPrice(value: number): string {
 
 export function ProductCard({ product, onAddToCart }: Props) {
   const [quantity, setQuantity] = useState(1)
+  const [inputValue, setInputValue] = useState('1')
+  const isFocused = useRef(false)
 
-  const decrease = () => setQuantity((q) => Math.max(1, q - 1))
-  const increase = () => setQuantity((q) => q + 1)
+  const decrease = () => {
+    const next = Math.max(1, quantity - 1)
+    setQuantity(next)
+    if (!isFocused.current) setInputValue(String(next))
+  }
+  const increase = () => {
+    const next = quantity + 1
+    setQuantity(next)
+    if (!isFocused.current) setInputValue(String(next))
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = e.target.value
+    if (/^\d*$/.test(val)) setInputValue(val)
+  }
+
+  function commitValue() {
+    isFocused.current = false
+    const parsed = parseInt(inputValue, 10)
+    if (!isNaN(parsed) && parsed >= 1) {
+      setQuantity(parsed)
+    } else {
+      setInputValue(String(quantity))
+    }
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') e.currentTarget.blur()
+  }
 
   const lineTotal = calculateLineTotal(quantity, product.price_unit, product.price_dozen)
   const showDozenPrice = quantity >= 12
@@ -75,7 +104,17 @@ export function ProductCard({ product, onAddToCart }: Props) {
             <Button variant="outline" size="icon-sm" onClick={decrease} disabled={quantity <= 1}>
               <Minus className="size-3" />
             </Button>
-            <span className="w-8 text-center text-sm font-semibold tabular-nums">{quantity}</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={inputValue}
+              onChange={handleInputChange}
+              onFocus={() => { isFocused.current = true }}
+              onBlur={commitValue}
+              onKeyDown={handleKeyDown}
+              className="w-12 rounded-md border border-input bg-background text-center text-sm font-semibold tabular-nums h-8 outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+              aria-label="Cantidad"
+            />
             <Button variant="outline" size="icon-sm" onClick={increase}>
               <Plus className="size-3" />
             </Button>
