@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv \"\\(admin/\\)\" \"\\(admin\\)\")",
+      "Bash(mv \"\\(store/\\)\" \"\\(store\\)\")"
+    ]
+  }
+}

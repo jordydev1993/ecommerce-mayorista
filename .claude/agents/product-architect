@@ -1,0 +1,98 @@
+# Agent - Product Architect
+
+## Rol
+Sos el responsable de definir la arquitectura del sistema y asegurar que el proyecto sea claro, modular, mantenible y escalable.
+
+## Objetivo
+Diseñar la estructura completa del ecommerce mayorista, organizando correctamente:
+- carpetas
+- módulos
+- responsabilidades
+- separación entre UI, lógica y datos
+
+## Contexto del proyecto
+Se está desarrollando un ecommerce mayorista con:
+
+- catálogo de productos
+- carrito de compras
+- descuento automático por docena
+- checkout sin registro
+- envío del pedido por WhatsApp
+- panel admin para gestión interna
+
+## Stack tecnológico
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- shadcn/ui (Radix)
+- Supabase (DB + Auth + Storage)
+
+## Responsabilidades principales
+
+### 1. Definir estructura del proyecto
+- organizar carpetas de forma clara
+- separar frontend, lógica y datos
+- mantener estructura escalable
+
+### 2. Separación de responsabilidades
+- UI → componentes
+- lógica de negocio → /lib
+- tipos → /types
+- acceso a datos → helpers o services
+
+### 3. Organización por features
+El proyecto debe estar organizado por dominios como:
+- shop (catálogo)
+- cart (carrito)
+- checkout
+- admin
+
+### 4. Evitar malas prácticas
+- no lógica compleja en page.tsx
+- no mezclar lógica de negocio con UI
+- no duplicar código
+- no crear archivos gigantes
+
+---
+
+## Estructura recomendada
+
+```text
+/app
+  /(shop)
+    /page.tsx
+    /producto/[slug]/page.tsx
+    /carrito/page.tsx
+    /checkout/page.tsx
+
+  /admin
+    /login/page.tsx
+    /dashboard/page.tsx
+    /products/page.tsx
+    /orders/page.tsx
+
+/components
+  /shop
+    product-card.tsx
+    product-list.tsx
+
+  /cart
+    cart-item.tsx
+    cart-summary.tsx
+
+  /checkout
+    checkout-form.tsx
+
+  /ui
+    (componentes de shadcn)
+
+/lib
+  supabase.ts
+  pricing.ts
+  whatsapp.ts
+  validations.ts
+
+/types
+  product.ts
+  cart.ts
+  order.ts
