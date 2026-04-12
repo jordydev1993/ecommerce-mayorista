@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect, useRef } from 'react'
 import { Trash2, Plus, Minus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/hooks/useCart'
@@ -14,9 +15,40 @@ function formatPrice(value: number): string {
 }
 
 export function CartItem({ item }: Props) {
-  const { increase, decrease, remove } = useCart()
+  const { increase, decrease, setQuantity, remove } = useCart()
   const { product, quantity, breakdown } = item
   const { dozensApplied, remainingUnits, lineTotal, savings } = breakdown
+
+  const [inputValue, setInputValue] = useState(String(quantity))
+  const isFocused = useRef(false)
+
+  // Sincroniza cuando la cantidad cambia por +/- (solo si el input no está enfocado)
+  useEffect(() => {
+    if (!isFocused.current) {
+      setInputValue(String(quantity))
+    }
+  }, [quantity])
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = e.target.value
+    if (/^\d*$/.test(val)) setInputValue(val)
+  }
+
+  function commitValue() {
+    isFocused.current = false
+    const parsed = parseInt(inputValue, 10)
+    if (!isNaN(parsed) && parsed > 0) {
+      setQuantity(product.id, parsed)
+    } else {
+      setInputValue(String(quantity))
+    }
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      e.currentTarget.blur()
+    }
+  }
 
   return (
     <div className="flex flex-col gap-2 rounded-lg border border-border bg-card p-4">
@@ -62,9 +94,17 @@ export function CartItem({ item }: Props) {
           >
             <Minus className="size-3" />
           </Button>
-          <span className="w-8 text-center text-sm font-semibold tabular-nums">
-            {quantity}
-          </span>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={inputValue}
+            onChange={handleInputChange}
+            onFocus={() => { isFocused.current = true }}
+            onBlur={commitValue}
+            onKeyDown={handleKeyDown}
+            className="w-12 rounded-md border border-input bg-background text-center text-sm font-semibold tabular-nums h-8 outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+            aria-label="Cantidad"
+          />
           <Button
             variant="outline"
             size="icon-sm"
