@@ -14,7 +14,7 @@ export default async function ProductosPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold text-foreground">Productos</h1>
+      <h1 className="text-2xl font-black tracking-tighter text-foreground">Productos</h1>
       <ProductTable initialProducts={products} />
     </div>
   )

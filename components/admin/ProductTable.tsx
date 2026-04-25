@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Pencil, Trash2, Eye, EyeOff, Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { toggleProductActive, deleteProduct } from '@/lib/admin/products'
 import type { Product } from '@/types/product'
 
@@ -47,31 +46,32 @@ export function ProductTable({ initialProducts }: Props) {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">{products.length} productos</p>
-        <Link href="/admin/productos/nuevo">
-          <Button size="sm" className="gap-1.5">
-            <Plus className="size-4" />
-            Nuevo producto
-          </Button>
+        <Link
+          href="/admin/productos/nuevo"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-foreground text-background px-4 py-2 text-sm font-medium hover:bg-foreground/85 transition-colors"
+        >
+          <Plus className="size-4" />
+          Nuevo producto
         </Link>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-2xl border border-border">
         <table className="w-full text-sm">
           <thead className="border-b border-border bg-muted/40">
             <tr>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Producto</th>
-              <th className="px-4 py-3 text-right font-medium text-muted-foreground">P. Unitario</th>
-              <th className="px-4 py-3 text-right font-medium text-muted-foreground">P. Docena</th>
-              <th className="px-4 py-3 text-right font-medium text-muted-foreground">Stock</th>
-              <th className="px-4 py-3 text-center font-medium text-muted-foreground">Estado</th>
-              <th className="px-4 py-3 text-right font-medium text-muted-foreground">Acciones</th>
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Producto</th>
+              <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">P. Unitario</th>
+              <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">P. Docena</th>
+              <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">Stock</th>
+              <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">Estado</th>
+              <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border bg-card">
             {products.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-4 py-10 text-center text-muted-foreground">
-                  No hay productos. <Link href="/admin/productos/nuevo" className="text-primary underline">Crear el primero</Link>.
+                  No hay productos. <Link href="/admin/productos/nuevo" className="underline hover:text-foreground transition-colors">Crear el primero</Link>.
                 </td>
               </tr>
             )}
@@ -82,7 +82,7 @@ export function ProductTable({ initialProducts }: Props) {
                   {/* Nombre + imagen */}
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-muted">
+                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted">
                         {product.image_url
                           ? <Image src={product.image_url} alt={product.name} fill className="object-cover" />
                           : <div className="flex h-full items-center justify-center text-[10px] text-muted-foreground">IMG</div>
@@ -117,24 +117,27 @@ export function ProductTable({ initialProducts }: Props) {
                   {/* Acciones */}
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
-                      <Link href={`/admin/productos/${product.id}`}>
-                        <Button variant="ghost" size="icon-sm" title="Editar">
-                          <Pencil className="size-3.5" />
-                        </Button>
+                      <Link
+                        href={`/admin/productos/${product.id}`}
+                        title="Editar"
+                        className="size-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                      >
+                        <Pencil className="size-3.5" />
                       </Link>
-                      <Button variant="ghost" size="icon-sm"
+                      <button
                         title={product.is_active ? 'Desactivar' : 'Activar'}
-                        onClick={() => handleToggle(product)}>
-                        {product.is_active
-                          ? <EyeOff className="size-3.5" />
-                          : <Eye className="size-3.5" />}
-                      </Button>
-                      <Button variant="ghost" size="icon-sm"
+                        onClick={() => handleToggle(product)}
+                        className="size-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                      >
+                        {product.is_active ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                      </button>
+                      <button
                         title="Eliminar"
-                        className="hover:text-destructive"
-                        onClick={() => handleDelete(product)}>
+                        onClick={() => handleDelete(product)}
+                        className="size-8 rounded-lg flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-destructive transition-colors"
+                      >
                         <Trash2 className="size-3.5" />
-                      </Button>
+                      </button>
                     </div>
                   </td>
                 </tr>

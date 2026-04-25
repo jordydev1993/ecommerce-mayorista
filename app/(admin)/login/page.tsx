@@ -28,10 +28,10 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
-      <div className="w-full max-w-sm rounded-xl border border-border bg-card p-8 shadow-sm">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#f5f5f7] via-[#e8e8ea] to-[#f5f5f7] px-4">
+      <div className="w-full max-w-sm rounded-2xl bg-white/80 backdrop-blur-xl border border-white/40 shadow-xl p-8">
         <div className="mb-6 text-center">
-          <h1 className="text-xl font-bold text-foreground">Panel admin</h1>
+          <h1 className="text-xl font-black tracking-tighter text-foreground">Panel admin</h1>
           <p className="mt-1 text-sm text-muted-foreground">Ingresá con tu cuenta</p>
         </div>
 
@@ -77,7 +77,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-1 h-10 w-full rounded-md bg-primary text-sm font-semibold text-primary-foreground transition hover:bg-primary/80 disabled:opacity-50"
+            className="mt-1 h-11 w-full rounded-xl bg-foreground text-sm font-bold text-background transition hover:bg-foreground/85 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {loading ? 'Ingresando...' : 'Ingresar'}
           </button>

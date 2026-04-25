@@ -14,7 +14,7 @@ export default async function PedidosPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold text-foreground">Pedidos</h1>
+      <h1 className="text-2xl font-black tracking-tighter text-foreground">Pedidos</h1>
       <OrderTable initialOrders={orders} />
     </div>
   )

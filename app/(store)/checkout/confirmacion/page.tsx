@@ -40,12 +40,18 @@ function ConfirmacionContent() {
   return (
     <main className="mx-auto w-full max-w-lg px-4 py-14 sm:px-6">
       <div className="flex flex-col items-center gap-6 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+        <div
+          className="flex h-16 w-16 items-center justify-center rounded-full text-black"
+          style={{
+            backgroundColor: 'color-mix(in srgb, var(--lime) 25%, transparent)',
+            boxShadow: '0 0 24px 0 color-mix(in srgb, var(--lime) 30%, transparent)'
+          }}
+        >
           <ShoppingBag className="size-8" />
         </div>
 
         <div>
-          <h1 className="text-2xl font-bold text-foreground">¡Pedido registrado!</h1>
+          <h1 className="text-3xl font-black tracking-tighter text-foreground">¡Pedido registrado!</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Tu pedido fue guardado. Enviáselo al vendedor por WhatsApp para coordinarlo.
           </p>

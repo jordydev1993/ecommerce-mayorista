@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
 import { useCart } from '@/hooks/useCart'
 import {
   validateCheckoutForm,
@@ -108,7 +107,7 @@ export function CheckoutForm() {
           placeholder="Tu nombre completo"
           autoComplete="name"
           aria-invalid={!!errors.customer_name}
-          className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none transition focus:border-ring focus:ring-2 focus:ring-ring/30 aria-[invalid=true]:border-destructive"
+          className="h-11 w-full rounded-xl border border-white/30 bg-white/60 backdrop-blur-sm px-3 text-sm outline-none transition focus:border-white/60 focus:bg-white/80 aria-[invalid=true]:border-destructive"
         />
         {errors.customer_name && (
           <p className="text-xs text-destructive">{errors.customer_name}</p>
@@ -129,7 +128,7 @@ export function CheckoutForm() {
           placeholder="Ej: 11 1234-5678"
           autoComplete="tel"
           aria-invalid={!!errors.customer_phone}
-          className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm outline-none transition focus:border-ring focus:ring-2 focus:ring-ring/30 aria-[invalid=true]:border-destructive"
+          className="h-11 w-full rounded-xl border border-white/30 bg-white/60 backdrop-blur-sm px-3 text-sm outline-none transition focus:border-white/60 focus:bg-white/80 aria-[invalid=true]:border-destructive"
         />
         {errors.customer_phone && (
           <p className="text-xs text-destructive">{errors.customer_phone}</p>
@@ -165,7 +164,7 @@ export function CheckoutForm() {
           onChange={handleChange}
           placeholder="Indicaciones especiales para el pedido..."
           rows={3}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none transition focus:border-ring focus:ring-2 focus:ring-ring/30 resize-none"
+          className="w-full rounded-xl border border-white/30 bg-white/60 backdrop-blur-sm px-3 py-2 text-sm outline-none transition focus:border-white/60 focus:bg-white/80 resize-none"
         />
       </div>
 
@@ -175,9 +174,14 @@ export function CheckoutForm() {
         </p>
       )}
 
-      <Button type="submit" className="w-full" disabled={submitting || itemsPriced.length === 0}>
+      <button
+        type="submit"
+        disabled={submitting || itemsPriced.length === 0}
+        className="w-full rounded-2xl py-4 text-base font-bold hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+        style={{ backgroundColor: 'var(--lime)', color: '#000000', boxShadow: '0 8px 25px 0 color-mix(in srgb, var(--lime) 30%, transparent)' }}
+      >
         {submitting ? 'Enviando pedido...' : 'Confirmar pedido'}
-      </Button>
+      </button>
     </form>
   )
 }

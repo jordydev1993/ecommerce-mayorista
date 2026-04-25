@@ -2,8 +2,8 @@
 
 import { useState, useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { ShoppingCart, Plus, Minus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { calculateLineTotal } from '@/lib/pricing'
 import type { Product } from '@/types/product'
 
@@ -55,55 +55,78 @@ export function ProductCard({ product, onAddToCart }: Props) {
   const showDozenPrice = quantity >= 12
 
   return (
-    <div className="flex flex-col rounded-xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <div className="group flex flex-col bg-white/70 backdrop-blur-xl rounded-3xl border border-white/30 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 overflow-hidden">
       {/* Imagen */}
-      <div className="relative aspect-square bg-muted">
+      <Link href={`/productos/${product.slug}`} className="relative aspect-square bg-gradient-to-br from-gray-100 to-gray-200 block overflow-hidden">
         {product.image_url ? (
           <Image
             src={product.image_url}
             alt={product.name}
             fill
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
+          <div className="flex h-full items-center justify-center text-muted-foreground/40 text-sm">
             Sin imagen
           </div>
         )}
-      </div>
 
-      {/* Info */}
-      <div className="flex flex-col gap-3 p-4 flex-1">
         {product.category && (
-          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <span
+            className="absolute top-2.5 left-2.5 rounded-full px-2.5 py-1 text-[11px] font-bold text-black"
+            style={{ backgroundColor: 'var(--lime)' }}
+          >
             {product.category}
           </span>
         )}
 
-        <h2 className="font-semibold text-base leading-snug text-foreground">
-          {product.name}
-        </h2>
+        {product.stock === 0 && (
+          <span className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm text-sm font-semibold text-foreground">
+            Sin stock
+          </span>
+        )}
+      </Link>
+
+      {/* Info */}
+      <div className="flex flex-col gap-3 p-4 flex-1">
+        <Link href={`/productos/${product.slug}`}>
+          <h2 className="font-semibold text-sm leading-snug text-foreground hover:underline underline-offset-2">
+            {product.name}
+          </h2>
+        </Link>
 
         {/* Precios */}
-        <div className="flex flex-col gap-1">
-          <div className="flex items-baseline justify-between">
-            <span className="text-xs text-muted-foreground">Precio unitario</span>
-            <span className="font-medium text-foreground">{formatPrice(product.price_unit)}</span>
+        <div className="flex items-baseline justify-between">
+          <div className="flex flex-col">
+            <span className="text-[11px] text-muted-foreground">Unitario</span>
+            <span className="text-sm font-medium text-foreground">{formatPrice(product.price_unit)}</span>
           </div>
-          <div className="flex items-baseline justify-between rounded-md bg-primary/5 px-2 py-1">
-            <span className="text-xs font-medium text-primary">Por docena (×12)</span>
-            <span className="font-bold text-primary">{formatPrice(product.price_dozen)}</span>
+          <div className="flex flex-col items-end">
+            <span className="text-[11px] text-muted-foreground">×12 docena</span>
+            <span className="text-sm font-bold text-foreground">{formatPrice(product.price_dozen)}</span>
           </div>
         </div>
+
+        {/* Stock bajo */}
+        {product.stock <= 5 && product.stock > 0 && (
+          <span className="inline-flex w-fit rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-medium text-amber-700">
+            Últimas {product.stock} unidades
+          </span>
+        )}
 
         {/* Selector de cantidad */}
         <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground">Cantidad</span>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon-sm" onClick={decrease} disabled={quantity <= 1}>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={decrease}
+              disabled={quantity <= 1}
+              className="size-7 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              aria-label="Disminuir"
+            >
               <Minus className="size-3" />
-            </Button>
+            </button>
             <input
               type="text"
               inputMode="numeric"
@@ -112,39 +135,42 @@ export function ProductCard({ product, onAddToCart }: Props) {
               onFocus={() => { isFocused.current = true }}
               onBlur={commitValue}
               onKeyDown={handleKeyDown}
-              className="w-12 rounded-md border border-input bg-background text-center text-sm font-semibold tabular-nums h-8 outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+              className="w-10 rounded-xl border border-white/40 bg-white/60 backdrop-blur-sm text-center text-sm font-semibold tabular-nums h-7 outline-none focus:border-white/60 focus:bg-white/80"
               aria-label="Cantidad"
             />
-            <Button variant="outline" size="icon-sm" onClick={increase}>
+            <button
+              onClick={increase}
+              className="size-7 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
+              aria-label="Aumentar"
+            >
               <Plus className="size-3" />
-            </Button>
+            </button>
           </div>
         </div>
 
-        {/* Total dinámico */}
-        <div className="flex items-baseline justify-between rounded-md bg-muted/60 px-2 py-1.5">
-          <span className="text-xs text-muted-foreground">
-            {showDozenPrice ? 'Total (con descuento)' : 'Total'}
-          </span>
-          <span className="font-bold text-foreground">{formatPrice(lineTotal)}</span>
-        </div>
-
-        {/* Stock bajo */}
-        {product.stock <= 5 && product.stock > 0 && (
-          <p className="text-xs text-amber-600 font-medium">
-            Últimas {product.stock} unidades
+        {showDozenPrice && (
+          <p
+            className="text-[11px] font-bold text-right rounded-full px-2 py-0.5 w-fit ml-auto"
+            style={{ backgroundColor: 'color-mix(in srgb, var(--lime) 20%, transparent)', color: '#1d1d1f' }}
+          >
+            Precio docena aplicado
           </p>
         )}
 
-        {/* Botón */}
-        <Button
-          className="mt-auto w-full gap-2"
+        {/* Botón con total integrado */}
+        <button
+          className="mt-auto w-full rounded-2xl py-2.5 text-sm font-bold flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+          style={product.stock !== 0 ? {
+            backgroundColor: 'var(--lime)',
+            color: '#000000',
+            boxShadow: '0 4px 15px 0 color-mix(in srgb, var(--lime) 30%, transparent)'
+          } : { backgroundColor: '#ececf0', color: '#86868b' }}
           onClick={() => onAddToCart(product, quantity)}
           disabled={product.stock === 0}
         >
-          <ShoppingCart className="size-4" />
-          {product.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
-        </Button>
+          <ShoppingCart className="size-3.5" />
+          {product.stock === 0 ? 'Sin stock' : `Agregar · ${formatPrice(lineTotal)}`}
+        </button>
       </div>
     </div>
   )

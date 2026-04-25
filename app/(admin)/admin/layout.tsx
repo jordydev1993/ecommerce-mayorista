@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { LayoutDashboard, Package, ShoppingBag, LogOut } from 'lucide-react'
 import { useAdminAuth } from '@/hooks/useAdminAuth'
@@ -14,6 +14,7 @@ const NAV = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
+  const pathname = usePathname()
   const { user, loading, signOut } = useAdminAuth()
 
   useEffect(() => {
@@ -33,22 +34,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <aside className="flex w-56 shrink-0 flex-col border-r border-border bg-card">
+      <aside className="flex w-56 shrink-0 flex-col border-r border-white/30 bg-white/70 backdrop-blur-xl">
         <div className="flex h-14 items-center border-b border-border px-5">
-          <span className="text-sm font-bold text-foreground">Admin</span>
+          <span className="text-sm font-black tracking-tighter text-foreground">Admin</span>
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 p-3">
-          {NAV.map(({ href, label, icon: Icon }) => (
+          {NAV.map(({ href, label, icon: Icon }) => {
+            const isActive = pathname === href || (href !== '/admin' && pathname.startsWith(href))
+            return (
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${isActive ? 'bg-muted text-foreground font-medium' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
             >
               <Icon className="size-4 shrink-0" />
               {label}
             </Link>
-          ))}
+            )
+          })}
         </nav>
 
         <div className="border-t border-border p-3">

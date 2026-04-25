@@ -18,14 +18,17 @@ export function WhatsAppButton({ order }: Props) {
   return (
     <div className="flex flex-col gap-3 w-full">
       {phoneConfigured ? (
-        <a href={link} target="_blank" rel="noopener noreferrer" className="w-full">
-          <button className="flex w-full items-center justify-center gap-2 rounded-md bg-[#25D366] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#20b858] active:bg-[#1da54e]">
-            <MessageCircle className="size-4" />
-            Enviar pedido por WhatsApp
-          </button>
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-4 py-4 text-base font-bold text-white transition-all duration-200 hover:bg-[#20b858] hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <MessageCircle className="size-5" />
+          Enviar pedido por WhatsApp
         </a>
       ) : (
-        <p className="rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-700 text-center">
+        <p className="rounded-xl bg-muted px-3 py-2 text-xs text-muted-foreground text-center">
           Contactá al vendedor para coordinar tu pedido.
         </p>
       )}
@@ -34,7 +37,7 @@ export function WhatsAppButton({ order }: Props) {
         <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground transition-colors select-none">
           Ver mensaje que se enviará
         </summary>
-        <pre className="mt-2 whitespace-pre-wrap rounded-lg border border-border bg-muted/40 p-4 text-xs text-foreground leading-relaxed">
+        <pre className="mt-2 whitespace-pre-wrap rounded-xl border border-border bg-muted/30 p-4 text-xs text-foreground leading-relaxed">
           {message}
         </pre>
       </details>

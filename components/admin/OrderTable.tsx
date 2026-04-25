@@ -54,14 +54,14 @@ export function OrderTable({ initialOrders }: Props) {
     <div className="flex flex-col gap-4">
       <p className="text-sm text-muted-foreground">{orders.length} pedidos</p>
 
-      <div className="overflow-x-auto rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-2xl border border-border">
         <table className="w-full text-sm">
           <thead className="border-b border-border bg-muted/40">
             <tr>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Cliente</th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Fecha</th>
-              <th className="px-4 py-3 text-right font-medium text-muted-foreground">Total</th>
-              <th className="px-4 py-3 text-center font-medium text-muted-foreground">Estado</th>
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Cliente</th>
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Fecha</th>
+              <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">Total</th>
+              <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">Estado</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
