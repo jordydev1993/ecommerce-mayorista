@@ -65,7 +65,11 @@ export function ProductDetail({ product }: Props) {
 
   const lineTotal = calculateLineTotal(quantity, product.price_unit, product.price_dozen)
   const savings = calculateSavings(quantity, product.price_unit, product.price_dozen)
-  const showDozenPrice = quantity >= 12
+  const hasDozen = quantity >= 12
+  const remainder = quantity % 12
+  const toComplete = remainder === 0 ? 0 : 12 - remainder
+  const savingsPerDozen = product.price_unit * 12 - product.price_dozen
+  const showDozenNudge = !hasDozen && remainder !== 0 && savingsPerDozen > 0
 
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -216,7 +220,7 @@ export function ProductDetail({ product }: Props) {
               </div>
             </div>
 
-            {showDozenPrice && (
+            {hasDozen ? (
               <p className="text-sm font-bold text-[#1d1d1f]">
                 <span
                   className="rounded-full px-3 py-1"
@@ -226,7 +230,12 @@ export function ProductDetail({ product }: Props) {
                   {savings > 0 && ` · Ahorrás ${formatPrice(savings)}`}
                 </span>
               </p>
-            )}
+            ) : showDozenNudge ? (
+              <p className="text-sm text-muted-foreground">
+                Agregá <span className="font-semibold text-foreground">{toComplete} {toComplete === 1 ? 'unidad' : 'unidades'}</span> más y ahorrás{' '}
+                <span className="font-semibold text-foreground">{formatPrice(savingsPerDozen)}</span> comprando por docena.
+              </p>
+            ) : null}
 
             {/* CTA */}
             <button

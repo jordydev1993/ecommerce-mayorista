@@ -52,7 +52,11 @@ export function ProductCard({ product, onAddToCart }: Props) {
   }
 
   const lineTotal = calculateLineTotal(quantity, product.price_unit, product.price_dozen)
-  const showDozenPrice = quantity >= 12
+  const hasDozen = quantity >= 12
+  const remainder = quantity % 12
+  const toComplete = remainder === 0 ? 0 : 12 - remainder
+  const savingsPerDozen = product.price_unit * 12 - product.price_dozen
+  const showDozenNudge = !hasDozen && remainder !== 0 && savingsPerDozen > 0
 
   return (
     <div className="group flex flex-col bg-white/70 backdrop-blur-xl rounded-3xl border border-white/30 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 overflow-hidden">
@@ -148,14 +152,18 @@ export function ProductCard({ product, onAddToCart }: Props) {
           </div>
         </div>
 
-        {showDozenPrice && (
+        {hasDozen ? (
           <p
             className="text-[11px] font-bold text-right rounded-full px-2 py-0.5 w-fit ml-auto"
             style={{ backgroundColor: 'color-mix(in srgb, var(--lime) 20%, transparent)', color: '#1d1d1f' }}
           >
             Precio docena aplicado
           </p>
-        )}
+        ) : showDozenNudge ? (
+          <p className="text-[11px] text-muted-foreground text-right">
+            +{toComplete} para docena · ahorrás {formatPrice(savingsPerDozen)}
+          </p>
+        ) : null}
 
         {/* Botón con total integrado */}
         <button
