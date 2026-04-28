@@ -9,15 +9,7 @@ interface Props {
 }
 
 export function ProductGrid({ products }: Props) {
-  const { addItem, increase } = useCart()
-
-  function handleAddToCart(product: Product, quantity: number) {
-    addItem(product)
-    // addItem agrega 1 — sumamos las unidades extra si quantity > 1
-    for (let i = 1; i < quantity; i++) {
-      increase(product.id)
-    }
-  }
+  const { addItem } = useCart()
 
   if (products.length === 0) {
     return (
@@ -33,7 +25,7 @@ export function ProductGrid({ products }: Props) {
         <ProductCard
           key={product.id}
           product={product}
-          onAddToCart={handleAddToCart}
+          onAddToCart={addItem}
         />
       ))}
     </div>

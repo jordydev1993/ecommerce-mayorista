@@ -1,15 +1,13 @@
 'use client'
 
-import { useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ShoppingCart, Plus, Minus } from 'lucide-react'
-import { calculateLineTotal, getDozenNudge } from '@/lib/pricing'
+import { ShoppingCart } from 'lucide-react'
 import type { Product } from '@/types/product'
 
 interface Props {
   product: Product
-  onAddToCart: (product: Product, quantity: number) => void
+  onAddToCart: (product: Product) => void
 }
 
 function formatPrice(value: number): string {
@@ -17,44 +15,6 @@ function formatPrice(value: number): string {
 }
 
 export function ProductCard({ product, onAddToCart }: Props) {
-  const [quantity, setQuantity] = useState(1)
-  const [inputValue, setInputValue] = useState('1')
-  const isFocused = useRef(false)
-
-  const decrease = () => {
-    const next = Math.max(1, quantity - 1)
-    setQuantity(next)
-    if (!isFocused.current) setInputValue(String(next))
-  }
-  const increase = () => {
-    const next = quantity + 1
-    setQuantity(next)
-    if (!isFocused.current) setInputValue(String(next))
-  }
-
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const val = e.target.value
-    if (/^\d*$/.test(val)) setInputValue(val)
-  }
-
-  function commitValue() {
-    isFocused.current = false
-    const parsed = parseInt(inputValue, 10)
-    if (!isNaN(parsed) && parsed >= 1) {
-      setQuantity(parsed)
-    } else {
-      setInputValue(String(quantity))
-    }
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter') e.currentTarget.blur()
-  }
-
-  const lineTotal = calculateLineTotal(quantity, product.price_unit, product.price_dozen)
-  const hasDozen = quantity >= 12
-  const { toComplete, savingsPerDozen, showNudge } = getDozenNudge(quantity, product.price_unit, product.price_dozen)
-
   return (
     <div className="group flex flex-col bg-white/70 backdrop-blur-xl rounded-3xl border border-white/30 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 overflow-hidden">
       {/* Imagen */}
@@ -116,65 +76,19 @@ export function ProductCard({ product, onAddToCart }: Props) {
           </span>
         )}
 
-        {/* Selector de cantidad */}
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">Cantidad</span>
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={decrease}
-              disabled={quantity <= 1}
-              className="size-8 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
-              aria-label="Disminuir"
-            >
-              <Minus className="size-3" />
-            </button>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={inputValue}
-              onChange={handleInputChange}
-              onFocus={() => { isFocused.current = true }}
-              onBlur={commitValue}
-              onKeyDown={handleKeyDown}
-              className="w-10 rounded-xl border border-white/40 bg-white/60 backdrop-blur-sm text-center text-sm font-semibold tabular-nums h-8 outline-none focus:border-white/60 focus:bg-white/80"
-              aria-label="Cantidad"
-            />
-            <button
-              onClick={increase}
-              className="size-8 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
-              aria-label="Aumentar"
-            >
-              <Plus className="size-3" />
-            </button>
-          </div>
-        </div>
-
-        {hasDozen ? (
-          <p
-            className="text-[11px] font-bold text-right rounded-full px-2 py-0.5 w-fit ml-auto"
-            style={{ backgroundColor: 'color-mix(in srgb, var(--lime) 20%, transparent)', color: '#1d1d1f' }}
-          >
-            Precio docena aplicado
-          </p>
-        ) : showNudge ? (
-          <p className="text-[11px] text-muted-foreground text-right">
-            +{toComplete} para docena · ahorrás {formatPrice(savingsPerDozen)}
-          </p>
-        ) : null}
-
-        {/* Botón con total integrado */}
+        {/* Botón */}
         <button
-          className="mt-auto w-full rounded-2xl py-2.5 text-sm font-bold flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="mt-auto w-full rounded-2xl py-2.5 text-sm font-bold hidden sm:flex items-center justify-center gap-2 hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
           style={product.stock !== 0 ? {
             backgroundColor: 'var(--lime)',
             color: '#000000',
             boxShadow: '0 4px 15px 0 color-mix(in srgb, var(--lime) 30%, transparent)'
           } : { backgroundColor: '#ececf0', color: '#86868b' }}
-          onClick={() => onAddToCart(product, quantity)}
+          onClick={() => onAddToCart(product)}
           disabled={product.stock === 0}
         >
           <ShoppingCart className="size-3.5" />
-          {product.stock === 0 ? 'Sin stock' : `Agregar · ${formatPrice(lineTotal)}`}
+          {product.stock === 0 ? 'Sin stock' : `Agregar · ${formatPrice(product.price_unit)}`}
         </button>
       </div>
     </div>
