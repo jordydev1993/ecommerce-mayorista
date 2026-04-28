@@ -16,7 +16,9 @@ function formatPrice(value: number): string {
 function formatItem(item: CreateOrderItemPayload): string {
   const lines: string[] = []
 
-  lines.push(`▸ ${item.product_name}`)
+  const variantParts = [item.color, item.size ? `Talle ${item.size}` : ''].filter(Boolean)
+  const variantLabel = variantParts.length > 0 ? ` (${variantParts.join(' · ')})` : ''
+  lines.push(`▸ ${item.product_name}${variantLabel}`)
   lines.push(`  Cantidad: ${item.quantity} unidades`)
 
   if (item.dozens_applied > 0) {

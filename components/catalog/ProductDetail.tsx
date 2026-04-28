@@ -23,6 +23,8 @@ export function ProductDetail({ product }: Props) {
   const [descOpen, setDescOpen] = useState(true)
   const [priceOpen, setPriceOpen] = useState(false)
   const [added, setAdded] = useState(false)
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined)
+  const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined)
   const isFocused = useRef(false)
 
   const decrease = () => {
@@ -55,10 +57,14 @@ export function ProductDetail({ product }: Props) {
     if (e.key === 'Enter') e.currentTarget.blur()
   }
 
+  const needsColor = product.colors.length > 0 && !selectedColor
+  const needsSize = product.sizes.length > 0 && !selectedSize
+
   function handleAddToCart() {
-    if (product.stock === 0) return
-    addItem(product)
-    for (let i = 1; i < quantity; i++) increase(product.id)
+    if (product.stock === 0 || needsColor || needsSize) return
+    addItem(product, selectedColor, selectedSize)
+    const cartKey = `${product.id}|${selectedColor ?? ''}|${selectedSize ?? ''}`
+    for (let i = 1; i < quantity; i++) increase(cartKey)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }
@@ -146,6 +152,58 @@ export function ProductDetail({ product }: Props) {
               </p>
             </div>
           </div>
+
+          {/* Selector de color */}
+          {product.colors.length > 0 && (
+            <div className="border-t border-white/40 pt-5 flex flex-col gap-2.5">
+              <p className="text-sm font-semibold text-foreground">
+                Color
+                {needsColor && <span className="ml-2 text-xs font-normal text-muted-foreground">(seleccioná uno)</span>}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {product.colors.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => setSelectedColor(selectedColor === c ? undefined : c)}
+                    className={`rounded-full px-3 py-1.5 text-sm font-semibold border transition-all duration-200 hover:scale-105 active:scale-95 ${
+                      selectedColor === c
+                        ? 'text-black border-transparent'
+                        : 'bg-white/60 border-white/40 text-foreground hover:bg-white'
+                    }`}
+                    style={selectedColor === c ? { backgroundColor: 'var(--lime)' } : undefined}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Selector de talle */}
+          {product.sizes.length > 0 && (
+            <div className="border-t border-white/40 pt-5 flex flex-col gap-2.5">
+              <p className="text-sm font-semibold text-foreground">
+                Talle
+                {needsSize && <span className="ml-2 text-xs font-normal text-muted-foreground">(seleccioná uno)</span>}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {product.sizes.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setSelectedSize(selectedSize === s ? undefined : s)}
+                    className={`rounded-full px-3 py-1.5 text-sm font-semibold border transition-all duration-200 hover:scale-105 active:scale-95 ${
+                      selectedSize === s
+                        ? 'text-black border-transparent'
+                        : 'bg-white/60 border-white/40 text-foreground hover:bg-white'
+                    }`}
+                    style={selectedSize === s ? { backgroundColor: 'var(--lime)' } : undefined}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Descripción (acordeón) */}
           {product.description && (
@@ -237,9 +295,9 @@ export function ProductDetail({ product }: Props) {
             {/* CTA */}
             <button
               onClick={handleAddToCart}
-              disabled={product.stock === 0}
+              disabled={product.stock === 0 || needsColor || needsSize}
               className="w-full rounded-2xl py-4 text-base font-bold flex items-center justify-center gap-2.5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
-              style={product.stock !== 0 ? {
+              style={product.stock !== 0 && !needsColor && !needsSize ? {
                 backgroundColor: 'var(--lime)',
                 color: '#000000',
                 boxShadow: '0 8px 25px 0 color-mix(in srgb, var(--lime) 35%, transparent)'

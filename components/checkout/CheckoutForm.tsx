@@ -66,6 +66,8 @@ export function CheckoutForm() {
         dozens_applied: i.breakdown.dozensApplied,
         remaining_units: i.breakdown.remainingUnits,
         line_total: i.breakdown.lineTotal,
+        color: i.color,
+        size: i.size,
       })),
     }
 

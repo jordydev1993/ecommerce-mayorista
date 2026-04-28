@@ -47,4 +47,6 @@ export interface CreateOrderItemPayload {
   dozens_applied: number
   remaining_units: number
   line_total: number
+  color?: string
+  size?: string
 }

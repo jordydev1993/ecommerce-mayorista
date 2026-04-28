@@ -16,7 +16,7 @@ function formatPrice(value: number): string {
 
 export function CartItem({ item }: Props) {
   const { increase, decrease, setQuantity, remove } = useCart()
-  const { product, quantity, breakdown } = item
+  const { product, quantity, breakdown, cartKey, color, size } = item
   const { dozensApplied, remainingUnits, lineTotal, savings } = breakdown
 
   const [inputValue, setInputValue] = useState(String(quantity))
@@ -37,7 +37,7 @@ export function CartItem({ item }: Props) {
     isFocused.current = false
     const parsed = parseInt(inputValue, 10)
     if (!isNaN(parsed) && parsed > 0) {
-      setQuantity(product.id, parsed)
+      setQuantity(cartKey, parsed)
     } else {
       setInputValue(String(quantity))
     }
@@ -65,9 +65,14 @@ export function CartItem({ item }: Props) {
       {/* Info */}
       <div className="flex flex-1 flex-col gap-2 min-w-0">
         <div className="flex items-start justify-between gap-2">
-          <p className="font-semibold text-sm text-foreground leading-snug truncate">{product.name}</p>
+            <p className="font-semibold text-sm text-foreground leading-snug truncate">{product.name}</p>
+          {(color || size) && (
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {[color, size ? `Talle ${size}` : ''].filter(Boolean).join(' · ')}
+            </p>
+          )}
           <button
-            onClick={() => remove(product.id)}
+            onClick={() => remove(cartKey)}
             className="shrink-0 size-8 rounded-full bg-white/80 border border-white/30 flex items-center justify-center text-muted-foreground hover:bg-red-50 hover:text-destructive hover:scale-110 active:scale-95 transition-all duration-200"
             aria-label="Eliminar producto"
           >
@@ -94,7 +99,7 @@ export function CartItem({ item }: Props) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <button
-              onClick={() => decrease(product.id)}
+              onClick={() => decrease(cartKey)}
               className="size-8 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
               aria-label="Disminuir"
             >
@@ -112,7 +117,7 @@ export function CartItem({ item }: Props) {
               aria-label="Cantidad"
             />
             <button
-              onClick={() => increase(product.id)}
+              onClick={() => increase(cartKey)}
               className="size-8 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
               aria-label="Aumentar"
             >

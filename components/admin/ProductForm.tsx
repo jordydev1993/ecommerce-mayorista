@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, KeyboardEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { Upload, Loader2 } from 'lucide-react'
+import { Upload, Loader2, X, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   createProduct,
@@ -29,6 +29,8 @@ function toFormData(p: Product): ProductFormData {
     stock: p.stock,
     image_url: p.image_url ?? '',
     is_active: p.is_active,
+    colors: p.colors ?? [],
+    sizes: p.sizes ?? [],
   }
 }
 
@@ -42,6 +44,8 @@ const EMPTY: ProductFormData = {
   stock: 0,
   image_url: '',
   is_active: true,
+  colors: [],
+  sizes: [],
 }
 
 interface FieldError {
@@ -197,6 +201,24 @@ export function ProductForm({ product }: Props) {
           className={inputCls(!!errors.stock)} />
       </Field>
 
+      {/* Colores */}
+      <Field label="Colores disponibles" hint="Presioná Enter o el botón + para agregar. Dejá vacío si no aplica.">
+        <TagInput
+          tags={form.colors}
+          placeholder="Ej: Rojo, Azul, Negro..."
+          onChange={(tags) => setForm((p) => ({ ...p, colors: tags }))}
+        />
+      </Field>
+
+      {/* Talles */}
+      <Field label="Talles disponibles" hint="Presioná Enter o el botón + para agregar. Dejá vacío si no aplica.">
+        <TagInput
+          tags={form.sizes}
+          placeholder="Ej: S, M, L, XL, 38, 40..."
+          onChange={(tags) => setForm((p) => ({ ...p, sizes: tags }))}
+        />
+      </Field>
+
       {/* Imagen */}
       <Field label="Imagen del producto">
         <div className="flex items-start gap-4">
@@ -255,6 +277,69 @@ export function ProductForm({ product }: Props) {
 
 function inputCls(invalid: boolean) {
   return `h-10 w-full rounded-md border bg-background px-3 text-sm outline-none transition focus:ring-2 focus:ring-ring/30 ${invalid ? 'border-destructive focus:border-destructive' : 'border-input focus:border-ring'}`
+}
+
+function TagInput({
+  tags,
+  placeholder,
+  onChange,
+}: {
+  tags: string[]
+  placeholder?: string
+  onChange: (tags: string[]) => void
+}) {
+  const [input, setInput] = useState('')
+
+  function addTag() {
+    const val = input.trim()
+    if (!val || tags.includes(val)) { setInput(''); return }
+    onChange([...tags, val])
+    setInput('')
+  }
+
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') { e.preventDefault(); addTag() }
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          className="h-10 flex-1 rounded-md border border-input bg-background px-3 text-sm outline-none transition focus:border-ring focus:ring-2 focus:ring-ring/30"
+        />
+        <button
+          type="button"
+          onClick={addTag}
+          className="h-10 w-10 rounded-md border border-input bg-background flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition"
+          aria-label="Agregar"
+        >
+          <Plus className="size-4" />
+        </button>
+      </div>
+      {tags.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {tags.map((tag) => (
+            <span key={tag} className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
+              {tag}
+              <button
+                type="button"
+                onClick={() => onChange(tags.filter((t) => t !== tag))}
+                className="text-muted-foreground hover:text-foreground transition"
+                aria-label={`Quitar ${tag}`}
+              >
+                <X className="size-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
 
 function Field({

@@ -11,6 +11,8 @@ export interface ProductFormData {
   stock: number
   image_url: string
   is_active: boolean
+  colors: string[]
+  sizes: string[]
 }
 
 // ------------------------------------------------------------
@@ -51,6 +53,8 @@ export async function createProduct(formData: ProductFormData): Promise<Product>
       stock: formData.stock,
       image_url: formData.image_url.trim() || null,
       is_active: formData.is_active,
+      colors: formData.colors,
+      sizes: formData.sizes,
     })
     .select()
     .single()
@@ -72,6 +76,8 @@ export async function updateProduct(id: string, formData: Partial<ProductFormDat
       ...(formData.stock !== undefined && { stock: formData.stock }),
       ...(formData.image_url !== undefined && { image_url: formData.image_url.trim() || null }),
       ...(formData.is_active !== undefined && { is_active: formData.is_active }),
+      ...(formData.colors !== undefined && { colors: formData.colors }),
+      ...(formData.sizes !== undefined && { sizes: formData.sizes }),
     })
     .eq('id', id)
 

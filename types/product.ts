@@ -9,6 +9,8 @@ export interface Product {
   stock: number
   image_url: string | null
   is_active: boolean
+  colors: string[]
+  sizes: string[]
   created_at: string
   updated_at: string
 }

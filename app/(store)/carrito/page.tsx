@@ -59,7 +59,7 @@ export default function CarritoPage() {
         <div className="lg:col-span-2">
           <div className="flex flex-col gap-3">
             {itemsPriced.map((item) => (
-              <CartItem key={item.product.id} item={item} />
+              <CartItem key={item.cartKey} item={item} />
             ))}
           </div>
         </div>

@@ -4,6 +4,9 @@ import type { PricingBreakdown } from '@/lib/pricing'
 export interface CartItem {
   product: Product
   quantity: number
+  color?: string
+  size?: string
+  cartKey: string
 }
 
 // CartItem enriquecido con el desglose de pricing — para uso en la UI

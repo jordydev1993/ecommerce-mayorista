@@ -30,6 +30,8 @@ CREATE TABLE public.products (
   stock         INTEGER         NOT NULL DEFAULT 0,
   image_url     TEXT,
   is_active     BOOLEAN         NOT NULL DEFAULT true,
+  colors        TEXT[]          NOT NULL DEFAULT '{}',
+  sizes         TEXT[]          NOT NULL DEFAULT '{}',
   created_at    TIMESTAMPTZ     NOT NULL DEFAULT now(),
   updated_at    TIMESTAMPTZ     NOT NULL DEFAULT now(),
 
