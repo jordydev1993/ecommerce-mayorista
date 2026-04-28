@@ -9,16 +9,16 @@ export default function CheckoutPage() {
       </h1>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Formulario */}
-        <section>
-          <h2 className="mb-4 text-lg font-bold tracking-tight text-foreground">Tus datos</h2>
-          <CheckoutForm />
-        </section>
-
-        {/* Resumen */}
-        <section>
+        {/* Resumen — primero en mobile para que el usuario vea qué está confirmando */}
+        <section className="order-first lg:order-last">
           <h2 className="mb-4 text-lg font-bold tracking-tight text-foreground">Tu pedido</h2>
           <OrderSummary />
+        </section>
+
+        {/* Formulario — segundo en mobile, primero en desktop */}
+        <section className="order-last lg:order-first">
+          <h2 className="mb-4 text-lg font-bold tracking-tight text-foreground">Tus datos</h2>
+          <CheckoutForm />
         </section>
       </div>
     </main>

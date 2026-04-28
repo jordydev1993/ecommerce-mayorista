@@ -4,7 +4,7 @@ import { useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ShoppingCart, Plus, Minus } from 'lucide-react'
-import { calculateLineTotal } from '@/lib/pricing'
+import { calculateLineTotal, getDozenNudge } from '@/lib/pricing'
 import type { Product } from '@/types/product'
 
 interface Props {
@@ -53,10 +53,7 @@ export function ProductCard({ product, onAddToCart }: Props) {
 
   const lineTotal = calculateLineTotal(quantity, product.price_unit, product.price_dozen)
   const hasDozen = quantity >= 12
-  const remainder = quantity % 12
-  const toComplete = remainder === 0 ? 0 : 12 - remainder
-  const savingsPerDozen = product.price_unit * 12 - product.price_dozen
-  const showDozenNudge = !hasDozen && remainder !== 0 && savingsPerDozen > 0
+  const { toComplete, savingsPerDozen, showNudge } = getDozenNudge(quantity, product.price_unit, product.price_dozen)
 
   return (
     <div className="group flex flex-col bg-white/70 backdrop-blur-xl rounded-3xl border border-white/30 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 overflow-hidden">
@@ -126,7 +123,7 @@ export function ProductCard({ product, onAddToCart }: Props) {
             <button
               onClick={decrease}
               disabled={quantity <= 1}
-              className="size-7 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              className="size-8 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
               aria-label="Disminuir"
             >
               <Minus className="size-3" />
@@ -139,12 +136,12 @@ export function ProductCard({ product, onAddToCart }: Props) {
               onFocus={() => { isFocused.current = true }}
               onBlur={commitValue}
               onKeyDown={handleKeyDown}
-              className="w-10 rounded-xl border border-white/40 bg-white/60 backdrop-blur-sm text-center text-sm font-semibold tabular-nums h-7 outline-none focus:border-white/60 focus:bg-white/80"
+              className="w-10 rounded-xl border border-white/40 bg-white/60 backdrop-blur-sm text-center text-sm font-semibold tabular-nums h-8 outline-none focus:border-white/60 focus:bg-white/80"
               aria-label="Cantidad"
             />
             <button
               onClick={increase}
-              className="size-7 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
+              className="size-8 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
               aria-label="Aumentar"
             >
               <Plus className="size-3" />
@@ -159,7 +156,7 @@ export function ProductCard({ product, onAddToCart }: Props) {
           >
             Precio docena aplicado
           </p>
-        ) : showDozenNudge ? (
+        ) : showNudge ? (
           <p className="text-[11px] text-muted-foreground text-right">
             +{toComplete} para docena · ahorrás {formatPrice(savingsPerDozen)}
           </p>

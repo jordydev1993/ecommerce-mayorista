@@ -73,6 +73,24 @@ export function calculateSavings(
   return fullPrice - actualPrice
 }
 
+/**
+ * Calcula si conviene mostrar un nudge al usuario para completar una docena.
+ * Solo aplica cuando quantity < 12 y comprar por docena tiene ahorro real.
+ */
+export function getDozenNudge(
+  quantity: number,
+  priceUnit: number,
+  priceDozen: number
+): { toComplete: number; savingsPerDozen: number; showNudge: boolean } {
+  const savingsPerDozen = priceUnit * 12 - priceDozen
+  const showNudge = quantity < 12 && savingsPerDozen > 0
+  return {
+    toComplete: 12 - getRemainder(quantity),
+    savingsPerDozen,
+    showNudge,
+  }
+}
+
 // ============================================================
 // Tipos de retorno para consumo desde la UI y order_items
 // ============================================================

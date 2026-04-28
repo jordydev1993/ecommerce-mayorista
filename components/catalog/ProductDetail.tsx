@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ShoppingCart, Plus, Minus, ArrowLeft, ChevronDown } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
-import { calculateLineTotal, calculateSavings } from '@/lib/pricing'
+import { calculateLineTotal, calculateSavings, getDozenNudge } from '@/lib/pricing'
 import type { Product } from '@/types/product'
 
 interface Props {
@@ -66,10 +66,7 @@ export function ProductDetail({ product }: Props) {
   const lineTotal = calculateLineTotal(quantity, product.price_unit, product.price_dozen)
   const savings = calculateSavings(quantity, product.price_unit, product.price_dozen)
   const hasDozen = quantity >= 12
-  const remainder = quantity % 12
-  const toComplete = remainder === 0 ? 0 : 12 - remainder
-  const savingsPerDozen = product.price_unit * 12 - product.price_dozen
-  const showDozenNudge = !hasDozen && remainder !== 0 && savingsPerDozen > 0
+  const { toComplete, savingsPerDozen, showNudge } = getDozenNudge(quantity, product.price_unit, product.price_dozen)
 
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -117,7 +114,7 @@ export function ProductDetail({ product }: Props) {
         </div>
 
         {/* Panel info — GlassCard */}
-        <div className="flex flex-col gap-6 bg-white/70 backdrop-blur-xl rounded-3xl border border-white/30 shadow-lg p-8">
+        <div className="flex flex-col gap-6 bg-white/70 backdrop-blur-xl rounded-3xl border border-white/30 shadow-lg p-5 sm:p-8">
           <div>
             <h1 className="text-3xl font-black tracking-tighter text-foreground sm:text-4xl">
               {product.name}
@@ -135,16 +132,16 @@ export function ProductDetail({ product }: Props) {
           </div>
 
           {/* Precios */}
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-4 sm:gap-6">
             <div>
               <p className="text-xs text-muted-foreground mb-1">Precio unitario</p>
-              <p className="text-2xl font-black tracking-tight text-foreground">
+              <p className="text-xl sm:text-2xl font-black tracking-tight text-foreground">
                 {formatPrice(product.price_unit)}
               </p>
             </div>
-            <div className="border-l border-white/40 pl-6">
+            <div className="border-l border-white/40 pl-4 sm:pl-6">
               <p className="text-xs text-muted-foreground mb-1">Precio por docena (×12)</p>
-              <p className="text-2xl font-black tracking-tight text-foreground">
+              <p className="text-xl sm:text-2xl font-black tracking-tight text-foreground">
                 {formatPrice(product.price_dozen)}
               </p>
             </div>
@@ -194,7 +191,7 @@ export function ProductDetail({ product }: Props) {
                 <button
                   onClick={decrease}
                   disabled={quantity <= 1}
-                  className="size-9 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                  className="size-10 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
                   aria-label="Disminuir"
                 >
                   <Minus className="size-4" />
@@ -207,12 +204,12 @@ export function ProductDetail({ product }: Props) {
                   onFocus={() => { isFocused.current = true }}
                   onBlur={commitValue}
                   onKeyDown={handleKeyDown}
-                  className="w-14 rounded-xl border border-white/40 bg-white/60 backdrop-blur-sm text-center text-base font-bold tabular-nums h-9 outline-none focus:border-white/60 focus:bg-white/80"
+                  className="w-14 rounded-xl border border-white/40 bg-white/60 backdrop-blur-sm text-center text-base font-bold tabular-nums h-10 outline-none focus:border-white/60 focus:bg-white/80"
                   aria-label="Cantidad"
                 />
                 <button
                   onClick={increaseQty}
-                  className="size-9 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
+                  className="size-10 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
                   aria-label="Aumentar"
                 >
                   <Plus className="size-4" />
@@ -230,7 +227,7 @@ export function ProductDetail({ product }: Props) {
                   {savings > 0 && ` · Ahorrás ${formatPrice(savings)}`}
                 </span>
               </p>
-            ) : showDozenNudge ? (
+            ) : showNudge ? (
               <p className="text-sm text-muted-foreground">
                 Agregá <span className="font-semibold text-foreground">{toComplete} {toComplete === 1 ? 'unidad' : 'unidades'}</span> más y ahorrás{' '}
                 <span className="font-semibold text-foreground">{formatPrice(savingsPerDozen)}</span> comprando por docena.

@@ -103,7 +103,7 @@ export function CatalogClient({ products, initialCategory, initialSearch }: Prop
       )}
 
       {/* Rango de precio */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <span className="text-sm text-muted-foreground">Precio:</span>
         <input
           type="number"

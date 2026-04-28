@@ -68,10 +68,10 @@ export function CartItem({ item }: Props) {
           <p className="font-semibold text-sm text-foreground leading-snug truncate">{product.name}</p>
           <button
             onClick={() => remove(product.id)}
-            className="shrink-0 size-6 rounded-full bg-white/80 border border-white/30 flex items-center justify-center text-muted-foreground hover:bg-red-50 hover:text-destructive hover:scale-110 active:scale-95 transition-all duration-200"
+            className="shrink-0 size-8 rounded-full bg-white/80 border border-white/30 flex items-center justify-center text-muted-foreground hover:bg-red-50 hover:text-destructive hover:scale-110 active:scale-95 transition-all duration-200"
             aria-label="Eliminar producto"
           >
-            <X className="size-3" />
+            <X className="size-3.5" />
           </button>
         </div>
 
@@ -95,7 +95,7 @@ export function CartItem({ item }: Props) {
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => decrease(product.id)}
-              className="size-7 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
+              className="size-8 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
               aria-label="Disminuir"
             >
               <Minus className="size-3" />
@@ -108,12 +108,12 @@ export function CartItem({ item }: Props) {
               onFocus={() => { isFocused.current = true }}
               onBlur={commitValue}
               onKeyDown={handleKeyDown}
-              className="w-10 rounded-xl border border-white/40 bg-white/60 backdrop-blur-sm text-center text-sm font-semibold tabular-nums h-7 outline-none focus:border-white/60 focus:bg-white/80"
+              className="w-10 rounded-xl border border-white/40 bg-white/60 backdrop-blur-sm text-center text-sm font-semibold tabular-nums h-8 outline-none focus:border-white/60 focus:bg-white/80"
               aria-label="Cantidad"
             />
             <button
               onClick={() => increase(product.id)}
-              className="size-7 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
+              className="size-8 rounded-full bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center text-foreground hover:bg-white hover:scale-110 active:scale-95 transition-all duration-200"
               aria-label="Aumentar"
             >
               <Plus className="size-3" />

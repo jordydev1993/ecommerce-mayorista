@@ -66,7 +66,7 @@ export default function CarritoPage() {
 
         {/* Panel de resumen */}
         <div className="lg:col-span-1">
-          <div className="sticky top-24 bg-white/80 backdrop-blur-xl rounded-3xl border border-white/40 shadow-xl p-6 flex flex-col gap-5">
+          <div className="lg:sticky lg:top-24 bg-white/80 backdrop-blur-xl rounded-3xl border border-white/40 shadow-xl p-4 sm:p-6 flex flex-col gap-5">
             <h2 className="font-black tracking-tighter text-lg text-foreground">
               Resumen del pedido
             </h2>
